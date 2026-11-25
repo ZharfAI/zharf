@@ -1,0 +1,50 @@
+name: Bug report
+description: Something in zharf does not work as it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please never paste an API key (zk-…) here; `zharf whoami` shows only its prefix.
+        Security problems go to security@zharf.ai, not to a public issue.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The command you ran, what you expected, and what you got.
+      placeholder: |
+        $ zharf run qwen3.5-9b "سلام"
+        ...
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The full output, including the error. Remove anything private.
+      render: shell
+  - type: input
+    id: version
+    attributes:
+      label: zharf version
+      description: The output of `zharf version`.
+      placeholder: zharf 0.1.0 (darwin/arm64, go1.25.6)
+    validations:
+      required: true
+  - type: dropdown
+    id: command
+    attributes:
+      label: Command
+      multiple: true
+      options: [login, models, run, serve, launch, update, other]
+  - type: input
+    id: client
+    attributes:
+      label: Client app (for serve or launch)
+      description: For example Open WebUI 0.6, Continue, Codex CLI 0.169.
+  - type: checkboxes
+    id: proxy
+    attributes:
+      label: Network
+      options:
+        - label: I use a proxy (HTTPS_PROXY / HTTP_PROXY)

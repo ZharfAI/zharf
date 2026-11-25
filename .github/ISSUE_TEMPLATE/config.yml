@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security problem
+    url: https://github.com/ZharfAI/zharf/blob/main/SECURITY.md
+    about: Report security problems privately to security@zharf.ai, not in a public issue.
+  - name: Account, billing or a model on the platform
+    url: https://platform.zharf.ai
+    about: Questions about your account, balance or a model's answers belong to the platform, not this repository.

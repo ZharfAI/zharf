@@ -1,0 +1,20 @@
+# Build output
+/dist/
+/zharf
+/zharf.exe
+*.exe~
+
+# Go
+*.test
+*.out
+coverage.*
+
+# Editors and systems
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Secrets
+.env
+.env.*
