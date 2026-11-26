@@ -2,12 +2,12 @@
 # Builds zharf for every supported system into dist/, with version.json and the install
 # scripts, ready to serve from https://platform.zharf.ai/cli/ or attach to a release.
 #
-#   scripts/build.sh            # version from $VERSION, else 0.1.0
+#   scripts/build.sh            # version from $VERSION, else 0.2.0
 #   VERSION=0.2.0 scripts/build.sh
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-VERSION="${VERSION:-0.1.0}"
+VERSION="${VERSION:-0.2.0}"
 VERSION="${VERSION#v}"
 GO="${GO:-go}"
 DIST=dist

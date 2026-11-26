@@ -63,7 +63,7 @@ func testApp(t *testing.T, baseURL string, stdin string) (*app, *testIO) {
 	t.Setenv("ZHARF_CONFIG_DIR", t.TempDir())
 	t.Setenv("ZHARF_API_KEY", "")
 	tio := &testIO{stdout: &bytes.Buffer{}, stderr: &bytes.Buffer{}, store: newMemStore("test store"),
-		installed: map[string]bool{"opencode": true, "codex": true, "qwen": true, "hermes": true}, version: "opencode 2.4.1"}
+		installed: map[string]bool{"claude": true, "opencode": true, "codex": true, "qwen": true, "hermes": true}, version: "opencode 2.4.1"}
 	a := &app{
 		baseURL: baseURL,
 		host:    hostOf(baseURL),

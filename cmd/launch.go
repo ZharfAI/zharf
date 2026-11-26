@@ -21,6 +21,7 @@ const launchUsage = `Usage: zharf launch <app> --model <id> [-- app arguments]
 Starts a coding agent on platform.zharf.ai with your saved key and the model you choose,
 like 'ollama launch'. Arguments after -- go to the app.
 
+  claude     Claude Code   the selected model on the platform Messages API
   opencode   OpenCode 2    a "zharf" provider and model in OPENCODE_CONFIG_CONTENT for this
                            run; opencode.json is not changed
   codex      Codex CLI     -c overrides only; ~/.codex/config.toml is not changed
@@ -31,8 +32,7 @@ like 'ollama launch'. Arguments after -- go to the app.
   zharf launch codex --model gpt-5-mini
   zharf launch hermes -m deepseek-v4-flash -- --yolo
 
-Claude Code is not offered: Claude models are not available on this platform. OpenClaw runs
-its models in its own Gateway service; point it at 'zharf serve' instead (docs/launch.md shows how).
+OpenClaw runs its models in its own Gateway service; point it at 'zharf serve' instead (docs/launch.md shows how).
 
 Flags:
   -m, --model ID   The model (required; see 'zharf models --type text')`
@@ -57,11 +57,29 @@ type launchApp struct {
 
 func launchApps() []launchApp {
 	return []launchApp{
+		{name: "claude", title: "Claude Code", binary: "claude", install: "npm install -g @anthropic-ai/claude-code", plan: planClaude},
 		{name: "opencode", title: "OpenCode", binary: "opencode", install: "curl -fsSL https://opencode.ai/v2/install | bash   (or: npm install -g @opencode/cli)", plan: planOpenCode},
 		{name: "codex", title: "Codex CLI", binary: "codex", install: "npm install -g @openai/codex", plan: planCodex},
 		{name: "qwen", title: "Qwen Code", binary: "qwen", install: "npm install -g @qwen-code/qwen-code@latest", plan: planQwen},
 		{name: "hermes", title: "Hermes Agent", binary: "hermes", install: "curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash", plan: planHermes},
 	}
+}
+
+// Claude Code speaks Messages at the platform's /anthropic base.
+func planClaude(a *app, p *launchPlan, model, _ string, key string) error {
+	p.args = []string{"--model", model}
+	p.env["ANTHROPIC_BASE_URL"] = a.baseURL + "/anthropic"
+	p.env["ANTHROPIC_AUTH_TOKEN"] = key
+	p.env["ANTHROPIC_DEFAULT_HAIKU_MODEL"] = model
+	// Keep credentials and cloud provider overrides for other Claude profiles out of this run.
+	for _, name := range []string{
+		"ANTHROPIC_API_KEY", "ANTHROPIC_CUSTOM_HEADERS", "CLAUDE_CODE_OAUTH_TOKEN",
+		"CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_VERTEX", "CLAUDE_CODE_USE_FOUNDRY",
+		"CLAUDE_CODE_USE_ANTHROPIC_AWS", "CLAUDE_CODE_USE_ANTHROPIC_GOOGLE_CLOUD", "CLAUDE_CODE_USE_MANTLE",
+	} {
+		p.env[name] = ""
+	}
+	return nil
 }
 
 // tomlString quotes a value for a Codex -c override (parsed as TOML).
@@ -181,6 +199,9 @@ func cmdLaunch(a *app, p parsed) error {
 		return nil
 	}
 	name := strings.ToLower(p.args[0])
+	if name == "claude-code" {
+		name = "claude"
+	}
 	extra := p.args[1:]
 	var chosen *launchApp
 	for i := range apps {
@@ -190,8 +211,6 @@ func cmdLaunch(a *app, p parsed) error {
 	}
 	switch {
 	case chosen != nil:
-	case name == "claude" || name == "claude-code":
-		return errors.New("Claude Code is not offered: Claude models are not available on this platform")
 	case name == "openclaw":
 		return fmt.Errorf("OpenClaw runs its models in its Gateway service, so zharf launch does not reconfigure it. Run `zharf serve` and add it to OpenClaw as an OpenAI-compatible provider at http://127.0.0.1:11434/v1 (docs/launch.md in github.com/ZharfAI/zharf shows how)")
 	default:

@@ -96,7 +96,7 @@ func commands() []command {
 		{name: "models", aliases: []string{"list", "ls"}, summary: "List the models and their prices in ژرف", usage: modelsUsage, flags: modelsFlags, run: cmdModels},
 		{name: "show", summary: "Show one model's details and prices", usage: showUsage, flags: showFlags, run: cmdShow},
 		{name: "run", summary: "Chat with a model, or ask it once", usage: runUsage, flags: runFlags, run: cmdRun},
-		{name: "launch", summary: "Start OpenCode, Codex, Qwen Code or Hermes on a ژرف model", usage: launchUsage, flags: launchFlags, run: cmdLaunch},
+		{name: "launch", summary: "Start Claude Code, OpenCode, Codex, Qwen Code or Hermes on a ژرف model", usage: launchUsage, flags: launchFlags, run: cmdLaunch},
 		{name: "serve", summary: "Serve the models locally over the Ollama and OpenAI APIs", usage: serveUsage, flags: serveFlags, run: cmdServe},
 		{name: "usage", summary: "Where to see spending and balance", usage: usageUsage, flags: usageFlags, run: cmdUsage},
 		{name: "update", summary: "Install the latest zharf", usage: updateUsage, flags: updateFlags, run: cmdUpdate},
