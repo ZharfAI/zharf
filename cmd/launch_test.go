@@ -21,6 +21,28 @@ func launchTest(t *testing.T, args ...string) (*testIO, string, error) {
 	return tio, f.URL, cmdLaunch(a, p)
 }
 
+func TestLaunchClaude(t *testing.T) {
+	t.Setenv("ANTHROPIC_API_KEY", "unrelated-key")
+	t.Setenv("ANTHROPIC_AUTH_TOKEN", "unrelated-token")
+	t.Setenv("CLAUDE_CODE_USE_BEDROCK", "1")
+	for _, name := range []string{"claude", "claude-code"} {
+		tio, base, err := launchTest(t, name, "--model", "qwen3.5-9b", "--", "--resume")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if tio.execPath != "/opt/test/bin/claude" || !reflect.DeepEqual(tio.execArgs, []string{"--model", "qwen3.5-9b", "--resume"}) {
+			t.Fatalf("unexpected launch: %s %q", tio.execPath, tio.execArgs)
+		}
+		if tio.execEnv["ANTHROPIC_BASE_URL"] != base+"/anthropic" || tio.execEnv["ANTHROPIC_AUTH_TOKEN"] != savedKey ||
+			tio.execEnv["ANTHROPIC_API_KEY"] != "" || tio.execEnv["CLAUDE_CODE_USE_BEDROCK"] != "" {
+			t.Fatal("incorrect Claude gateway environment")
+		}
+		if strings.Contains(tio.stderr.String()+tio.stdout.String(), savedKey) {
+			t.Fatal("launcher printed the credential")
+		}
+	}
+}
+
 func TestLaunchCodex(t *testing.T) {
 	tio, base, err := launchTest(t, "codex", "--model", "qwen3.5-9b", "--", "exec", "hi")
 	if err != nil {
@@ -122,9 +144,6 @@ func TestLaunchRefusals(t *testing.T) {
 	var ue *usageError
 	if _, _, err := launchTest(t, "codex"); !errors.As(err, &ue) {
 		t.Fatalf("no model: %v", err)
-	}
-	if _, _, err := launchTest(t, "claude", "-m", "qwen3.5-9b"); err == nil || !strings.Contains(err.Error(), "not offered") {
-		t.Fatalf("claude: %v", err)
 	}
 	if _, _, err := launchTest(t, "openclaw", "-m", "qwen3.5-9b"); err == nil || !strings.Contains(err.Error(), "zharf serve") {
 		t.Fatalf("openclaw: %v", err)

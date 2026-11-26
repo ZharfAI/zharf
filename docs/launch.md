@@ -17,6 +17,20 @@ is not installed, it prints the install command and exits with status 1.
 
 ## What each app gets
 
+### Claude Code (`claude`)
+
+Run `zharf login` once, then choose a model:
+
+```bash
+zharf launch claude --model glm-5.4
+```
+
+Zharf starts the installed `claude` executable with `--model`, sets the Messages base URL to
+`/anthropic` on your configured platform, and supplies your Zharf key in the child environment.
+Additional Claude Code arguments go after `--`.
+
+Install: `npm install -g @anthropic-ai/claude-code`
+
 ### Codex CLI (`codex`)
 
 Only command-line overrides; `~/.codex/config.toml` is not touched:
@@ -126,11 +140,6 @@ OpenClaw documents for OpenAI-compatible endpoints, with `zharf serve` running:
 ```
 
 Then restart the Gateway.
-
-### Claude Code
-
-Not offered: Claude models are not available on platform.zharf.ai
-(`GET /v1/models/not-offered` lists them with the reason).
 
 ## Adding an app
 

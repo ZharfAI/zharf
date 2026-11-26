@@ -67,7 +67,7 @@ Balance and top-ups are on [platform.zharf.ai/wallet](https://platform.zharf.ai/
 | `zharf show <model>` | One model's details |
 | `zharf run <model> [prompt]` | Ask once, or chat |
 | `zharf serve` | Serve the models over the Ollama and OpenAI APIs |
-| `zharf launch <app> --model <id>` | Start OpenCode, Codex, Qwen Code or Hermes on a ژرف model |
+| `zharf launch <app> --model <id>` | Start Claude Code, OpenCode, Codex, Qwen Code or Hermes on a ژرف model |
 | `zharf usage` | Where to see spending and balance |
 | `zharf update` | Install the latest zharf |
 | `zharf version`, `zharf help [command]` | |
@@ -232,6 +232,7 @@ like `ollama launch`:
 
 ```bash
 zharf launch                                  # the apps, and which are installed
+zharf launch claude --model glm-5.4
 zharf launch codex --model gpt-5-mini
 zharf launch opencode -m qwen3.5-plus
 zharf launch qwen -m qwen3.5-plus
@@ -240,13 +241,14 @@ zharf launch hermes -m deepseek-v4-flash -- --yolo     # after --: the app's own
 
 | App | How it is pointed at ژرف |
 | --- | --- |
+| `claude` (Claude Code) | the selected model and the platform Messages endpoint, authenticated with your saved Zharf key |
 | `codex` (Codex CLI) | `-c model_provider=zharf …` overrides; your `config.toml` is not changed |
 | `opencode` (OpenCode 2) | a `zharf` provider and the model in `OPENCODE_CONFIG_CONTENT` for this run; `opencode.json` is not changed |
 | `qwen` (Qwen Code) | `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL` for this run |
 | `hermes` (Hermes Agent) | `--provider custom` with `CUSTOM_BASE_URL`; `config.yaml` is not changed |
 
 If the app is missing, zharf prints its install command. OpenClaw can use zharf through
-`zharf serve`, and Claude Code is not offered because Claude models are not on the platform.
+`zharf serve`.
 Details: [docs/launch.md](docs/launch.md).
 
 ## `zharf usage`, `zharf update`
@@ -351,11 +353,12 @@ zharf run qwen3.5-plus              # گفت‌وگو
 
 ### اجرای دستیارهای برنامه‌نویسی
 
-دستور `zharf launch` دستیارهای برنامه‌نویسی را روی مدل‌های ژرف اجرا می‌کند. فعلاً از OpenCode و Codex و Qwen Code و Hermes پشتیبانی می‌کند:
+دستور `zharf launch` دستیارهای برنامه‌نویسی را روی مدل‌های ژرف اجرا می‌کند. از Claude Code و OpenCode و Codex و Qwen Code و Hermes پشتیبانی می‌کند:
 
 </div>
 
 ```bash
+zharf launch claude --model glm-5.4
 zharf launch codex --model gpt-5-mini
 zharf launch opencode -m qwen3.5-plus
 ```
